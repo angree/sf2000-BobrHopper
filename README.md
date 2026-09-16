@@ -3,7 +3,7 @@
 A hopping game for the **Data Frog SF2000** and **GB300** handhelds: a native C++17 libretro core with its own
 software renderer, running at 320×240 on a 918 MHz MIPS32 CPU **with no floating-point unit**.
 
-Current build: **v026**.
+Current build: **v027**.
 
 ![the game](docs/screenshot.png)
 
@@ -12,8 +12,12 @@ Current build: **v026**.
 The game logic is a port of **[EvanBacon/expo-crossy-road](https://github.com/EvanBacon/expo-crossy-road)**
 (MIT, commit `6f2e84e5`) — an open-source TypeScript + three.js game that is itself a study of the arcade
 hopping genre. That project's structure, timings and behaviour were followed closely: rows, traffic, logs and
-the hero's hop all reproduce what the original does, which is why the repository keeps the upstream tarball and a
-trace harness that compares this port against a reference run of the original, step by step.
+the hero's hop all reproduce what the original does, which is why the repository keeps a copy of that project's
+assets and a trace harness that compares this port against a reference run of the original, step by step.
+
+**No audio from the original project is included here.** Every sound this game plays was made for the port, and
+the archive in `upstream/` has had its audio folder removed — that is why it is named `-noaudio`. The models,
+images and font that remain in it are MIT, like the rest of that project.
 
 **This project is not affiliated with, endorsed by, or connected to Hipster Whale, Yodo1 or the "Crossy Road"
 game or trademark.** It is a hobby port of an MIT-licensed open-source project, with its own name, its own
@@ -77,7 +81,7 @@ out/sf2000/core_87000000_gb300_frogui     GB300 V2, FrogUI
 Package them for a card:
 
 ```sh
-sh build/package_sf2000.sh v026      # -> out/sf2000/BobrHopper-SF2000-v026/ and .zip
+sh build/package_sf2000.sh v027      # -> out/sf2000/BobrHopper-SF2000-v027/ and .zip
 ```
 
 ## Installing on the console

@@ -76,7 +76,9 @@ SOUNDS = {
 SOUNDS.update({
     "chicken_die_0": "audio/chickendeath.wav",
     "chicken_die_1": "audio/chickendeath2.wav",
-    "car_passive_0": "audio/car-engine-loop-deep.wav",
+    # O18: "car_passive_0" (the upstream engine loop) is gone. Game::playPassiveCarSound only ever plays
+    # car_passive_1, so it was baked into every package without being heard - and it was the last upstream
+    # recording left in the game after O15 replaced the other 25 with our own.
     "car_passive_1": "audio/car-horn.wav",
     "car_die_0": "audio/carhit.mp3",
     "car_die_1": "audio/carsquish3.wav",

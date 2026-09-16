@@ -1,11 +1,22 @@
 MIT License
 
-The original game this port is derived from:
-Copyright (c) 2016-present Evan Bacon (https://github.com/EvanBacon/expo-crossy-road)
+Two copyright holders, one licence.
 
-This port to the SF2000 / GB300 handhelds, and the assets made for it
-(the beaver, the wordmark and every sound effect):
-Copyright (c) 2026 G. Korycki
+1. The game this port is derived from - its structure, its logic and the
+   assets bundled here from it (models, images and the font):
+   Copyright (c) 2016-present Evan Bacon
+   https://github.com/EvanBacon/expo-crossy-road
+   Everything taken from that project is used under its MIT licence, which
+   is the licence below.
+
+2. This port to the SF2000 / GB300 handhelds, and everything made for it:
+   the C++ sources, the software renderer, the libretro core, the bakers,
+   the beaver, the wordmark, the soundtrack and every sound effect:
+   Copyright (c) 2026 G. Korycki
+
+No audio from the original project is included: every sound the game plays
+was made for this port, and the upstream archive in upstream/ has had its
+audio folder removed.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

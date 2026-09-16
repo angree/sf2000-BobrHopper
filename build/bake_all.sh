@@ -5,7 +5,7 @@ ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
 SRC=upstream/expo-crossy-road/assets
 if [ ! -d "$SRC" ]; then
-  mkdir -p upstream && tar -xzf upstream/expo-crossy-road-6f2e84e5.tar.gz -C upstream
+  mkdir -p upstream && tar -xzf upstream/expo-crossy-road-6f2e84e5-noaudio.tar.gz -C upstream
 fi
 rm -rf data
 python tools/bake_models.py --all "$SRC" data
