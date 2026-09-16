@@ -130,7 +130,7 @@ release/      built packages, ignored by git (see release/README.md)
 ## Credits
 
 - **[Evan Bacon](https://github.com/EvanBacon/expo-crossy-road)** — the original open-source game this port
-  follows, MIT licensed.
+  follows, MIT licensed. [NOTICE.md](NOTICE.md) says which part of this repository is whose.
 - The SF2000 multicore and FrogUI framework authors, whose loader makes a custom core possible at all.
 - Port, artwork and sounds: G. Korycki, with Claude Code.
 
