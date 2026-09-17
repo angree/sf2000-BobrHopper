@@ -3,7 +3,7 @@
 A hopping game for the **Data Frog SF2000** and **GB300** handhelds: a native C++17 libretro core with its own
 software renderer, running at 320×240 on a 918 MHz MIPS32 CPU **with no floating-point unit**.
 
-Current build: **v027**.
+Current build: **v028**.
 
 ![the game](docs/screenshot.png)
 
@@ -81,7 +81,7 @@ out/sf2000/core_87000000_gb300_frogui     GB300 V2, FrogUI
 Package them for a card:
 
 ```sh
-sh build/package_sf2000.sh v027      # -> out/sf2000/BobrHopper-SF2000-v027/ and .zip
+sh build/package_sf2000.sh v028      # -> out/sf2000/BobrHopper-SF2000-v028/ and .zip
 ```
 
 ## Installing on the console
