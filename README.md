@@ -2,8 +2,9 @@
 
 A hopping game for the **Data Frog SF2000** and **GB300** handhelds: a native C++17 libretro core with its own
 software renderer, running at 320×240 on a 918 MHz MIPS32 CPU **with no floating-point unit**.
+**One or two players** on one screen.
 
-Current build: **v028**.
+Current build: **v029**.
 
 ![the game](docs/screenshot.png)
 
@@ -31,6 +32,12 @@ artwork and its own sounds.
   original's models, plus box shadows. ~30 fps on the device.
 - **Progression mode** beside the endless Classic mode: levels of 10·k rows with a chequered finish line, a
   career that remembers the level reached, a rank for every level, and a fanfare halfway through.
+- **Two players on one screen.** Classic becomes a duel: fall too far behind and you are out of the frame, the
+  other one plays on, and the higher score wins. Progression is co-operative: the leader is pulled back onto the
+  other's head, and a player who dies comes back on its partner's head a couple of seconds later. Land on the
+  other player and you stand on its head until it hops away, and every row then offers at least two ways
+  through. The view widens by itself; here that is only a camera scale, so nothing extra is loaded.
+  The second pad is libretro port 1, which the console's own loader passes straight through.
 - **A difficulty curve that keeps going.** The first rows are gentle for small children; from 150 points the
   *slowest* traffic, logs and railroad spacing are cut away one layer at a time, and the minimum number of
   dangerous rows in a row keeps climbing with no ceiling (`src/game/difficulty.h`).
@@ -81,7 +88,7 @@ out/sf2000/core_87000000_gb300_frogui     GB300 V2, FrogUI
 Package them for a card:
 
 ```sh
-sh build/package_sf2000.sh v028      # -> out/sf2000/BobrHopper-SF2000-v028/ and .zip
+sh build/package_sf2000.sh v029      # -> out/sf2000/BobrHopper-SF2000-v029/ and .zip
 ```
 
 ## Installing on the console
@@ -96,6 +103,11 @@ Settings and the best score are kept in `ROMS\bobrhopper\conf\crossy.cfg`.
 
 **Controls:** D-pad hops (on release, like the original), A hops forward / starts a new game, Start pauses,
 Select opens the settings, B goes back, Select + L shows the frame counter.
+
+**Two players:** Settings → *Players: 2*, then a pad for each of them (*Pad 1* and *Pad 2*). The settings list
+scrolls now that it no longer fits on one screen. Player two needs a controller on the console's own player-two
+input — on the SF2000 that is the 2.4 GHz wireless pad. Some firmware revisions mirror player one's buttons onto
+player two; if both heroes move together, that is the firmware, not the game.
 
 ## Testing without the console
 
@@ -146,6 +158,13 @@ powiązany z firmą Hipster Whale ani z grą „Crossy Road" — ma własną naz
 Co doszło ponad pierwowzór: tryb progresji z poziomami, metą i rangami, kariera zapamiętywana między grami,
 trudność rosnąca bez końca od 150 punktów, gwarancja przejścia każdego rzędu, bóbr jako domyślny bohater,
 własne logo, wszystkie dźwięki wymienione na własne oraz polski i angielski interfejs.
+
+**Tryb dwóch graczy na jednym ekranie**: w ustawieniach *Gracze: 2*, a potem pad dla każdego (*Pad 1*, *Pad 2*).
+Lista ustawień się przewija. W trybie klasycznym to pojedynek — kto zostanie za daleko w tyle, odpada, a drugi
+gra dalej; w progresji to współpraca — prowadzący jest cofany na głowę tego z tyłu, a zabity wraca po chwili na
+głowie partnera. Kto wskoczy na pole drugiego, staje mu na głowie, dopóki tamten nie odskoczy; każdy rząd ma
+wtedy co najmniej dwa wolne przejścia. Drugi gracz potrzebuje kontrolera na wejściu gracza 2 (na SF2000 to pad
+bezprzewodowy 2,4 GHz).
 
 Budowanie i instalacja — jak w sekcjach powyżej. Ustawienia i rekord konsola trzyma w
 `ROMS\bobrhopper\conf\crossy.cfg`.
