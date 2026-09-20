@@ -4,7 +4,7 @@ A hopping game for the **Data Frog SF2000** and **GB300** handhelds: a native C+
 software renderer, running at 320×240 on a 918 MHz MIPS32 CPU **with no floating-point unit**.
 **One or two players** on one screen.
 
-Current build: **v029**.
+Current build: **v031**.
 
 ![the game](docs/screenshot.png)
 
@@ -88,7 +88,7 @@ out/sf2000/core_87000000_gb300_frogui     GB300 V2, FrogUI
 Package them for a card:
 
 ```sh
-sh build/package_sf2000.sh v029      # -> out/sf2000/BobrHopper-SF2000-v029/ and .zip
+sh build/package_sf2000.sh v031      # -> out/sf2000/BobrHopper-SF2000-v031/ and .zip
 ```
 
 ## Installing on the console

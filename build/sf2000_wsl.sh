@@ -1,8 +1,8 @@
 #!/bin/sh
 # Runs inside WSL (called by build/build_sf2000.sh): compiles a target's sources with the SF2000 multicore toolchain
 # and flags into out/sf2000/obj/<target>/ and archives them as out/sf2000/lib<target>.a.
-# For sf2000_core it then links the archive into the FOUR device variants, the way QPSX_400 does
-# (the same way the QPSX core links: build_*_mc.bat, link_multicore.sh):
+# For sf2000_core it then links the archive into the FOUR device variants, the way another multicore port of the
+# author's does it (build_*_mc.bat, link_multicore.sh - the path is in the private notes, not here):
 #   sf2000_mc      Temp/sf2000_multicore_official   bisrv_08_03-core.ld
 #   gb300_mc       Temp/gb300_multicore             bisrv_08_03-core.ld (its own)
 #   sf2000_frogui  Temp_FrogUI/sf2000_multicore     linker_scripts/bisrv_08_03-core.ld     -DSF2000 -DFROGGY_MXMV=0x60
