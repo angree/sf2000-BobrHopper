@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -39,9 +40,15 @@
 
 using namespace cr;
 
+#ifndef _WIN32
+#define _popen popen
+#define _pclose pclose
+#endif
+
 namespace {
 
 struct Options {
+    std::string video;           // --video DIR: record the game (30 fps video + sound) into DIR/bobrhopper_<time>.mp4
     uint32_t seed = 0;
     bool hidden = false, headless = false, fast = false, fullscreen = false;
     bool noIdle = false;  // stop the idle squash before shots (frozen-frame comparisons)
@@ -127,6 +134,79 @@ std::vector<ScriptOp> parseScript(const std::string &text)
     return ops;
 }
 
+// --video: frames go to an ffmpeg pipe on the wall clock (30 a second, repeated or skipped as the game's frame rate
+// wanders), so the picture stays in step with the sound the mixer writes alongside; muxed into one mp4 at exit.
+struct VideoRec {
+    FILE *pipe = nullptr, *sound = nullptr;
+    double next = 0;
+    std::string base;
+    int w = 0, h = 0;
+    std::vector<uint8_t> rgba;
+};
+VideoRec g_video;
+
+void videoFrame(Renderer &renderer, int w, int h, double now, const std::string &dir)
+{
+    VideoRec &v = g_video;
+    if (!v.pipe) {
+        char stamp[32];
+        const time_t t = time(nullptr);
+        strftime(stamp, sizeof stamp, "%Y%m%d_%H%M%S", localtime(&t));
+        v.base = dir + "/bobrhopper_" + stamp;
+        v.w = w;
+        v.h = h;
+        const std::string cmd = "ffmpeg -loglevel error -y -f rawvideo -pix_fmt rgba -s " + std::to_string(w) + "x" +
+                                std::to_string(h) + " -r 30 -i - -c:v libx264 -preset veryfast -crf 20 "
+                                "-pix_fmt yuv420p \"" + v.base + "_video.mp4\"";
+        v.pipe = _popen(cmd.c_str(), "wb");
+        v.sound = fopen((v.base + "_sound.raw").c_str(), "wb");
+        if (!v.pipe) {
+            logf("video: cannot start ffmpeg");
+            return;
+        }
+        audioTap(v.sound);
+        v.next = now;
+        logf("video: recording to %s", v.base.c_str());
+    }
+    if (now < v.next || w != v.w || h != v.h) return;
+    renderer.readPixels(w, h, v.rgba);
+    while (now >= v.next) {
+        fwrite(v.rgba.data(), 1, v.rgba.size(), v.pipe);
+        v.next += 1.0 / 30.0;
+    }
+}
+
+void videoFinish()
+{
+    VideoRec &v = g_video;
+    if (!v.pipe) return;
+    audioTap(nullptr);
+    _pclose(v.pipe);
+    long soundBytes = 0;
+    if (v.sound) {
+        soundBytes = ftell(v.sound);
+        fclose(v.sound);
+    }
+    if (soundBytes < 4096) { // no audio device (a hidden run): the picture alone
+        remove((v.base + "_sound.raw").c_str());
+        rename((v.base + "_video.mp4").c_str(), (v.base + ".mp4").c_str());
+        logf("video: %s.mp4 ok (no sound)", v.base.c_str());
+        v.pipe = nullptr;
+        return;
+    }
+    // -af apad: the sound is padded to the picture's length, never the picture cut to the sound's
+    const std::string cmd = "ffmpeg -loglevel error -y -i \"" + v.base + "_video.mp4\" -f s16le -ar " +
+                            std::to_string(Audio::kRate) + " -ac 1 -i \"" + v.base + "_sound.raw\" -c:v copy -c:a aac "
+                            "-b:a 128k -af apad -shortest \"" + v.base + ".mp4\"";
+    const int rc = system(cmd.c_str());
+    logf("video: %s.mp4 %s", v.base.c_str(), rc == 0 ? "ok" : "mux FAILED (the _video.mp4 and _sound.raw stay)");
+    if (rc == 0) {
+        remove((v.base + "_video.mp4").c_str());
+        remove((v.base + "_sound.raw").c_str());
+    }
+    v.pipe = nullptr;
+}
+
 bool saveShot(Renderer &renderer, int w, int h, const std::string &path)
 {
     std::vector<uint8_t> rgba;
@@ -149,6 +229,7 @@ int main(int argc, char **argv)
         else if (a == "--headless") opt.headless = true;
         else if (a == "--fast") opt.fast = true;
         else if (a == "--fullscreen") opt.fullscreen = true;
+        else if (a == "--video") opt.video = next();
         else if (a == "--frames") opt.frames = std::atol(next().c_str());
         else if (a == "--auto") opt.autoScript = next();
         else if (a == "--shot-dir") opt.shotDir = next();
@@ -700,10 +781,12 @@ int main(int argc, char **argv)
         }
         pendingShots.clear();
         if (!running && opt.hidden) saveShot(renderer, viewW, viewH, opt.shotDir + "/final.png");
+        if (!opt.video.empty()) videoFrame(renderer, viewW, viewH, platform.now(), opt.video);
         if (!opt.hidden) platform.swap();
         frameTimer.frame(platform.now());
     }
 
+    videoFinish();
     logf("end: steps=%ld state=%d score=%d draws=%d tris=%d culled=%d casters=%d nodes=%zu frames=%ld fps=%.1f",
          stepsDone, int(game.state()), game.score(), renderer.stats.drawCalls, renderer.stats.triangles,
          sceneRenderer.culled, sceneRenderer.shadowCasters, game.context().pool->live(), frameTimer.frames(),

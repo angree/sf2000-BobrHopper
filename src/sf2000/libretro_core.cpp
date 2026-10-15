@@ -40,7 +40,7 @@
 
 namespace {
 
-const char *const kCoreVersion = "v034";
+const char *const kCoreVersion = "v035";
 const int kWidth = 320;
 const int kHeight = 240;
 const int kSampleRate = 22050;

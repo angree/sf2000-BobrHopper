@@ -73,8 +73,8 @@ hr=$(grep -o 'hash=[0-9a-f]*' "$D/replay.txt")
 grep -q "recorded 150 frames" "$D/run1.txt" && [ "$hr" = "$h1" ] && ok "recorded pad replays the same frames ($hr)" || bad "replay hash $hr vs $h1"
 clean_conf
 
-# C2.4: a setting changed in the menu reaches the card (flushed with fs_sync) and comes back on the next start
-"$EXE" --frames 60 --rom "$CARD/start" --shot-dir "$D" --shot-prefix settings --script "w30 btn:select w10 btn:left w10 shot:settings" > "$D/settings.txt" 2>&1
+# C2.4 (the list starts with PLAYERS, CONTROL P1 and ENDLESS RETRIES since O23/O24: three downs reach SOUNDS): a setting changed in the menu reaches the card (flushed with fs_sync) and comes back on the next start
+"$EXE" --frames 90 --rom "$CARD/start" --shot-dir "$D" --shot-prefix settings --script "w30 btn:select w10 btn:down w6 btn:down w6 btn:down w10 btn:left w10 shot:settings" > "$D/settings.txt" 2>&1
 grep -q "^volume=9" "$CARD/conf/crossy.cfg" 2>/dev/null && ok "SOUNDS lowered in the menu saved as volume=9" || bad "conf/crossy.cfg: $(cat "$CARD/conf/crossy.cfg" 2>/dev/null)"
 grep -q "fs_sync .*conf/crossy.cfg" "$D/settings.txt" && ok "the settings file is flushed with fs_sync" || bad "no fs_sync for conf/crossy.cfg"
 "$EXE" --frames 5 --rom "$CARD/start" --shot-dir "$D" --shot-prefix reload > "$D/reload.txt" 2>&1
@@ -82,7 +82,7 @@ grep -q "settings loaded volume=9" "$D/reload.txt" && ok "the next start loads v
 clean_conf
 # O4.1: the run above left the settings screen open (saved on unload); closed with B, the settings reach the card
 # before the game is unloaded, and only once for several presses
-"$EXE" --frames 90 --rom "$CARD/start" --shot-dir "$D" --shot-prefix settings_b --script "w30 btn:select w10 btn:left w6 btn:left w6 btn:left w10 btn:b w20" > "$D/settings_b.txt" 2>&1
+"$EXE" --frames 120 --rom "$CARD/start" --shot-dir "$D" --shot-prefix settings_b --script "w30 btn:select w10 btn:down w6 btn:down w6 btn:down w10 btn:left w6 btn:left w6 btn:left w10 btn:b w20" > "$D/settings_b.txt" 2>&1
 syncs_before_unload=$(sed '/stage 91 retro_unload_game/q' "$D/settings_b.txt" | grep -c "fs_sync .*conf/crossy.cfg$")
 grep -q "^volume=7" "$CARD/conf/crossy.cfg" 2>/dev/null && [ "$syncs_before_unload" -eq 1 ] \
   && ok "settings closed with B: written once before unload (volume=7)" || bad "settings on close: $syncs_before_unload syncs before unload, $(grep '^volume' "$CARD/conf/crossy.cfg" 2>/dev/null)"
